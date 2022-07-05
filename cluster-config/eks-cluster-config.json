@@ -1,0 +1,95 @@
+{
+  "eks-cluster-config": [
+    {
+      "Name": "cluster_name",
+      "Value": "curity-demo",
+      "Description": "Name of the EKS cluster"
+    },
+    {
+      "Name": "cluster_version",
+      "Value": "1.22",
+      "Description": "Version of the k8s cluster"
+    },
+    {
+      "Name": "region",
+      "Value": "eu-west-1",
+      "Description": "AWS Region to deploy the k8s cluster"
+    },
+    {
+      "Name": "availability_zones",
+      "Value": "\"eu-west-1a\",\"eu-west-1b\"",
+      "Description": "Region's availability zones to span the k8s cluster"
+    },
+    {
+      "Name": "vpc_cidr",
+      "Value": "10.10.0.0/16",
+      "Description": "VPC CIDR range"
+    },
+    {
+      "Name": "instance_type",
+      "Value": "t3.small",
+      "Description": "worker nodes instance type"
+    },
+    {
+      "Name": "disk_size",
+      "Value": "20",
+      "Description": "worker nodes disk size in GB"
+    },
+    {
+      "Name": "nodegroup_name",
+      "Type": "String",
+      "Value": "curtiy-idsvr-ng",
+      "Description": "eks cluster managed nodegroup name"
+    },
+    {
+      "Name": "nodegroup_min_size",
+      "Type": "String",
+      "Value": "2",
+      "Description": "minimum size of the node group"
+    },
+    {
+      "Name": "nodegroup_desired_size",
+      "Type": "String",
+      "Value": "2",
+      "Description": "desired size of the node group"
+    },
+    {
+      "Name": "nodegroup_max_size",
+      "Type": "String",
+      "Value": "4",
+      "Description": "maximum size of the nodegroup"
+    }
+  ],
+  "idsvr-config": [
+    {
+      "Name": "admin_hostname",
+      "Value": "admin.example.eks",
+      "Description": "Admin service FQDN"
+    },
+    {
+      "Name": "runtime_hostname", 
+      "Value": "login.example.eks",
+      "Description": "Runtime service FQDN"
+    },
+    {
+      "Name": "num_runtime_nodes", 
+      "Value": "1",
+      "Description": "Number of curity runtime nodes"
+    },
+    {
+      "Name": "idsvr_admin_password",
+      "Value": "Password123",
+      "Description": "password for curity identity server admin console"
+    },
+    {
+      "Name": "idsvr_namespace",
+      "Value": "curity",
+      "Description": "Name of the k8s namespace to deploy curity identity server"
+    },
+    {
+      "Name": "logging_level",
+      "Value": "DEBUG",
+      "Description": "Logging Level for admin and runtime services"
+    }
+  ]
+}

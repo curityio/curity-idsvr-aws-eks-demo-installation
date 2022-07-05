@@ -1,0 +1,56 @@
+# EKS Cluster configuration for demo environment
+# Variables are read from the configuration file cluster-config/eks-cluster-config.json file
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: ${cluster_name}
+  region: ${region}
+  version: "${cluster_version}"
+  tags:
+    env: demo
+
+vpc:
+  cidr: ${vpc_cidr}
+
+iam:
+  withOIDC: true
+
+addons:
+  - name: vpc-cni 
+    attachPolicyARNs:
+      - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+  - name: coredns
+    version: latest 
+  - name: kube-proxy
+    version: latest
+
+managedNodeGroups:
+  - name: ${nodegroup_name}  
+    availabilityZones: [${availability_zones}]  
+    instanceType: ${instance_type}
+    minSize: ${nodegroup_min_size}
+    desiredCapacity: ${nodegroup_desired_size}
+    maxSize: ${nodegroup_max_size}
+    privateNetworking: true
+    volumeSize: ${disk_size}
+    volumeType: gp2
+    volumeEncrypted: true
+    labels: {role: worker}  
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+    tags:
+      nodegroup-role: worker
+      k8s.io/cluster-autoscaler/enabled: "true"
+      k8s.io/cluster-autoscaler/${cluster_name}: "owned"
+
+cloudWatch:
+  clusterLogging: 
+    enableTypes: ["audit", "authenticator", "controllerManager"]
+    # Sets the number of days to retain the logs for (see [CloudWatch docs](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutRetentionPolicy.html#API_PutRetentionPolicy_RequestSyntax)).
+    # By default, log data is stored in CloudWatch Logs indefinitely.
+    logRetentionInDays: 30
+
+availabilityZones: [${availability_zones}]

@@ -1,0 +1,40 @@
+# Custom values for Curity Identity Server Helm Chart.
+# Please refer to https://github.com/curityio/idsvr-helm/blob/master/idsvr/README.md for exhaustive set of configuration options.
+
+# -----------------------------------------------------------------------------
+# Deployment parameters
+# -----------------------------------------------------------------------------
+
+curity:
+  config:
+    uiEnabled: true
+    configuration:
+        - secretRef:
+            name: idsvr-config
+            items:
+              - key: license.json
+                path: license/license.json
+    configurationSecret: idsvr-config
+    configurationSecretItemName: idsvr-cluster-config.xml
+
+  admin:
+    logging:
+      level: $logging_level
+  
+  runtime:
+    logging:
+      level: $logging_level  
+
+ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    runtime:
+      host: $runtime_hostname
+      secretName: example-eks-tls
+      paths:
+        - /
+    admin:
+      host: $admin_hostname
+      secretName: example-eks-tls

@@ -1,0 +1,12 @@
+idsvr-config/license.json
+idsvr-config/helm-values.yaml
+ingress-nginx-config/helm-values.yaml
+examples/*.yaml
+certs/*.pem
+certs/*.key
+certs/*.csr  
+certs/*.srl
+cluster-config/cluster-cfg.yaml
+.DS*
+idsvr-config/templates/deployed-idsvr-helm.yaml
+templates
