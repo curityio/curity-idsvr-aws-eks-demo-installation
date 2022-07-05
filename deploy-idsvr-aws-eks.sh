@@ -4,7 +4,7 @@ set -eo pipefail
 display_help() {
     echo -e "Usage: $(basename "$0") [-h | --help] [-i | --install]  [-d | --delete]  \n" >&2
     echo "** DESCRIPTION **"
-    echo -e "This script can be used to deploy a eks cluster, curity identity server, kong gateway and phantom token plugin. \n"
+    echo -e "This script can be used to deploy Curity Identity Server in AWS Elastic kubernetes cluster. \n"
     echo -e "OPTIONS \n"
     echo " --help      show this help message and exit                                                                  "
     echo " --install   creates a private eks cluster & deploys curity identity server along with other components       "
@@ -227,7 +227,7 @@ environment_info() {
   echo "|                                                                                                                                                  |"
   echo "| * Curity administrator username is admin and password is $idsvr_admin_password                                                                    "
   echo "| * Remember to add certs/example.eks.ca.pem to operating system's certificate trust store &                                                       |"
-  echo "|   $LB_IP  admin.example.eks login.example.eks kong-admin.example.eks api.example.eks entry to /etc/hosts                                          "
+  echo "|   $LB_IP  admin.example.eks login.example.eks entry to /etc/hosts                                          "
   echo "|--------------------------------------------------------------------------------------------------------------------------------------------------|" 
 }
 
