@@ -3,7 +3,7 @@
 [![Quality](https://img.shields.io/badge/quality-experiment-red)](https://curity.io/resources/code-examples/status/)
 [![Availability](https://img.shields.io/badge/availability-source-blue)](https://curity.io/resources/code-examples/status/)
 
-A demo installation of Curity Identity Server and Kong gateway including phantom token plugin in AWS EKS for PoC purposes.
+A demo installation of Curity Identity Server in AWS Elastic Kubernetes Service (=EKS) for PoC purposes.
 
 ## Prepare the Installation
 
