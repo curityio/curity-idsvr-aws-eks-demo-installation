@@ -31,7 +31,7 @@ greeting_message() {
 
 pre_requisites_check() {
   # Check if aws cli, kubectl, eksctl, helm & jq are installed
-  if ! [[ $(aws --version) && $(helm version) && $(jq --version) && $(kubectl version) && $(eksctl version) ]]; then
+  if ! [[ $(aws --version) && $(helm version) && $(jq --version) && $(eksctl version) ]]; then
       echo "Please install aws cli, kubectl, eksctl, helm & jq to continue with the deployment .."
       exit 1 
   fi
@@ -68,6 +68,8 @@ create_eks_cluster() {
   then
     generate_self_signed_certificates
     envsubst < cluster-config/cluster-cfg.yaml.template > cluster-config/cluster-cfg.yaml
+    
+    echo -e "Creating EKS cluster for deployment..."
     eksctl create cluster -f cluster-config/cluster-cfg.yaml
   else
     echo "Not creating a new k8s cluster, assuming that an existing cluster is already available for deployment ..."
@@ -96,7 +98,7 @@ generate_self_signed_certificates() {
   fi
 }
 
-
+# Imports Self-signed certificates to AWS ACM so that they can be used in the LoadBalancer SSL configuration
 import_certificate_to_aws_acm() {
   echo "Uploading self signed certs to aws certificate manager .."
   cert_arn=$(aws acm import-certificate --certificate fileb://certs/example.eks.ssl.pem --private-key fileb://certs/example.eks.ssl.key  --certificate-chain fileb://certs/example.eks.ca.pem | jq -r '.CertificateArn')
@@ -225,9 +227,9 @@ environment_info() {
   echo "| [OIDC METADATA]   https://login.example.eks/~/.well-known/openid-configuration                                                                   |"                                                                                                  
   echo "|                                                                                                                                                  |"
   echo "|                                                                                                                                                  |"
-  echo "| * Curity administrator username is admin and password is $idsvr_admin_password                                                                    "
+  echo "| * Curity administrator username is : admin and password is : $idsvr_admin_password                                                                "
   echo "| * Remember to add certs/example.eks.ca.pem to operating system's certificate trust store &                                                       |"
-  echo "|   $LB_IP  admin.example.eks login.example.eks entry to /etc/hosts                                          "
+  echo "|   $LB_IP  admin.example.eks login.example.eks entry to /etc/hosts                                                                                 "
   echo "|--------------------------------------------------------------------------------------------------------------------------------------------------|" 
 }
 
