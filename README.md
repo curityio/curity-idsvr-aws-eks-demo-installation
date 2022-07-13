@@ -1,4 +1,4 @@
-#  Curtiy Identity Server EKS Installation
+#  Curity Identity Server EKS Installation
 
 [![Quality](https://img.shields.io/badge/quality-experiment-red)](https://curity.io/resources/code-examples/status/)
 [![Availability](https://img.shields.io/badge/availability-source-blue)](https://curity.io/resources/code-examples/status/)
@@ -62,13 +62,13 @@ All of the services are running privately in the aws elastic kubernetes cluster 
 
 6. Clean up
     ```sh
-     ./deploy-idsvr-aws-eks.sh --delete
+    ./deploy-idsvr-aws-eks.sh --delete
     ```
 
 
 7. Logs
     ```sh
-     kubectl -n curtiy logs -f -l role=curity-idsvr-runtime
+     kubectl -n curity logs -f -l role=curity-idsvr-runtime
      kubectl -n curity logs -f -l role=curity-idsvr-admin  
      kubectl -n ingress-nginx logs -f -l app.kubernetes.io/component=controller
      kubectl -n api logs -f -l app=simple-echo-api
