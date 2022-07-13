@@ -6,9 +6,9 @@ display_help() {
     echo "** DESCRIPTION **"
     echo -e "This script can be used to deploy Curity Identity Server in AWS Elastic kubernetes cluster. \n"
     echo -e "OPTIONS \n"
-    echo " --help      show this help message and exit                                                                  "
-    echo " --install   creates a private eks cluster & deploys curity identity server along with other components       "
-    echo " --start     start up the environment                                                                         "
+    echo " --help      shows this help message and exit                                                                 "
+    echo " --install   creates a eks cluster & deploys curity identity server along with other components               "
+    echo " --start     starts up the environment                                                                        "
     echo " --stop      shuts down the environment                                                                       "
     echo " --delete    deletes the eks k8s cluster & identity server deployment                                         "
 }
@@ -24,6 +24,8 @@ greeting_message() {
   echo "| [2] CURITY IDENTITY SERVER ADMIN NODE                                      |"
   echo "| [3] CURITY IDENTITY SERVER RUNTIME NODE                                    |"
   echo "| [4] NGINX INGRESS CONTROLLER                                               |"
+  echo "| [6] NGINX PHANTOM TOKEN PLUGIN                                             |"
+  echo "| [7] EXAMPLE NODEJS API                                                     |"
   echo "|----------------------------------------------------------------------------|" 
   echo -e "\n"
 }
@@ -239,12 +241,13 @@ environment_info() {
   echo "|--------------------------------------------------------------------------------------------------------------------------------------------------|"
   echo "|                                                                                                                                                  |"
   echo "| [ADMIN UI]        https://admin.example.eks/admin                                                                                                |"
-  echo "| [OIDC METADATA]   https://login.example.eks/~/.well-known/openid-configuration                                                                   |"                                                                                                  
+  echo "| [OIDC METADATA]   https://login.example.eks/~/.well-known/openid-configuration                                                                   |"
+  echo "| [SIMPLE ECHO API] https://api.example.eks/echo                                                                                                   |"                                                                                                  
   echo "|                                                                                                                                                  |"
   echo "|                                                                                                                                                  |"
   echo "| * Curity administrator username is : admin and password is : $idsvr_admin_password                                                                "
   echo "| * Remember to add certs/example.eks.ca.pem to operating system's certificate trust store &                                                       |"
-  echo "|   $LB_IP  admin.example.eks login.example.eks api.example.eks entry to /etc/hosts                                                                                 "
+  echo "|   $LB_IP  admin.example.eks login.example.eks api.example.eks entry to /etc/hosts                                                                 "
   echo "|--------------------------------------------------------------------------------------------------------------------------------------------------|" 
 }
 
