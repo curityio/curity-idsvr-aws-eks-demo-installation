@@ -121,7 +121,8 @@ delete_acm_certificate(){
 
 deploy_ingress_controller() {
   import_certificate_to_aws_acm
-  echo -e "Deploying Nginx ingress controller in the k8s cluster ...\n"
+  echo -e "Deploying Nginx ingress controller & adding phantom token plugin in the k8s cluster ...\n"
+
   # create secrets for TLS termination
   kubectl create secret tls example-eks-tls --cert=certs/example.eks.ssl.pem --key=certs/example.eks.ssl.key -n "$idsvr_namespace" || true
    
@@ -165,6 +166,20 @@ get_load_balancer_public_ip() {
 }
 
 
+deploy_simple_echo_api() {
+  echo -e "Deploying simple echo api in the k8s cluster ...\n"
+  kubectl create namespace "$api_namespace" || true
+
+ # create secrets for TLS termination at ingress layer
+  kubectl create secret tls example-eks-tls --cert=certs/example.eks.ssl.pem --key=certs/example.eks.ssl.key  -n "$api_namespace"
+
+  kubectl apply -f simple-echo-api-config/echo-api-ingress-nginx.yaml -n "${api_namespace}"
+  kubectl apply -f simple-echo-api-config/simple-echo-api-k8s-deployment.yaml -n "${api_namespace}"
+  
+  echo -e "\n"
+}
+
+
 startup_environment() {
   echo "Starting up the environment .."
   asg_name=$(aws autoscaling describe-auto-scaling-groups --filters Name=tag-key,Values="kubernetes.io/cluster/${cluster_name}" | jq -r '.AutoScalingGroups | .[] | .AutoScalingGroupName')
@@ -198,7 +213,8 @@ tear_down_environment() {
     helm uninstall curity -n "${idsvr_namespace}" || true
     helm uninstall ingress-nginx -n ingress-nginx || true
     delete_acm_certificate
-
+    kubectl delete -f simple-echo-api-config/simple-echo-api-k8s-deployment.yaml -n "${api_namespace}" || true
+    
     eksctl delete cluster -f cluster-config/cluster-cfg.yaml
     echo -e "\n" 
   else
@@ -206,7 +222,6 @@ tear_down_environment() {
     exit 1
   fi
 }
-
 
 
 environment_info() {
@@ -229,7 +244,7 @@ environment_info() {
   echo "|                                                                                                                                                  |"
   echo "| * Curity administrator username is : admin and password is : $idsvr_admin_password                                                                "
   echo "| * Remember to add certs/example.eks.ca.pem to operating system's certificate trust store &                                                       |"
-  echo "|   $LB_IP  admin.example.eks login.example.eks entry to /etc/hosts                                                                                 "
+  echo "|   $LB_IP  admin.example.eks login.example.eks api.example.eks entry to /etc/hosts                                                                                 "
   echo "|--------------------------------------------------------------------------------------------------------------------------------------------------|" 
 }
 
@@ -246,6 +261,7 @@ case $1 in
     read_cluster_config_file
     create_eks_cluster
     deploy_idsvr
+    deploy_simple_echo_api
     deploy_ingress_controller
     environment_info
     ;;

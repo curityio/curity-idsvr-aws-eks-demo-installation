@@ -1,1 +1,1 @@
-subjectAltName=DNS:example.eks,DNS:admin.example.eks,DNS:login.example.eks
+subjectAltName=DNS:example.eks,DNS:admin.example.eks,DNS:login.example.eks,DNS:api.example.eks

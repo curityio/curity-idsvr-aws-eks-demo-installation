@@ -3,7 +3,9 @@
 [![Quality](https://img.shields.io/badge/quality-experiment-red)](https://curity.io/resources/code-examples/status/)
 [![Availability](https://img.shields.io/badge/availability-source-blue)](https://curity.io/resources/code-examples/status/)
 
-A demo installation of Curity Identity Server in AWS Elastic Kubernetes Service (=EKS) for PoC purposes.
+This tutorial will enable any developer or an architect to quickly run the Curity Identity Server and the Phantom Token Pattern in Kubernetes using NGINX Ingress controller in the AWS Elastic Kubernetes Engine.
+
+This installation follows the security best practice to host the Identity server and the APIs behind an Ingress controller acting as an Reverse proxy/API gateway. This will ensure that opaque access tokens are issued to internet clients, while APIs receive JWT access tokens.
 
 ## Prepare the Installation
 
@@ -37,23 +39,23 @@ All of the services are running privately in the aws elastic kubernetes cluster 
 
  2. Configuration
  
-    Cluster options could be configured by modifying `cluster-config/eks-cluster-config.json` file.
+    Cluster options could be configured by modifying `cluster-config/eks-cluster-config.json` file. Please ensure that the region set in the `cluster-config/eks-cluster-config.json` must match the region set for aws cli (~/.aws/config).
 
 
  3. Install the environment  
-     ```sh
+    ```sh
     ./deploy-idsvr-aws-eks.sh --install
     ```   
 
 
 4. Shutdown environment  
-     ```sh
+    ```sh
     ./deploy-idsvr-aws-eks.sh --stop
     ```  
 
 
 5. Start the environment  
-     ```sh
+    ```sh
     ./deploy-idsvr-aws-eks.sh --start
     ```  
 
@@ -68,6 +70,8 @@ All of the services are running privately in the aws elastic kubernetes cluster 
     ```sh
      kubectl -n curtiy logs -f -l role=curity-idsvr-runtime
      kubectl -n curity logs -f -l role=curity-idsvr-admin  
+     kubectl -n ingress-nginx logs -f -l app.kubernetes.io/component=controller
+     kubectl -n api logs -f -l app=simple-echo-api
     ```
 
 
@@ -93,7 +97,8 @@ All of the services are running privately in the aws elastic kubernetes cluster 
 | Service             | URL                                                           | Purpose                                                         |
 | --------------------|:------------------------------------------------------------- | ----------------------------------------------------------------|
 | ADMIN UI            | https://admin.example.eks/admin                               | Curity Administration console                                   |
-| OIDC METADATA       | https://login.example.eks/~/.well-known/openid-configuration  | OIDC metadata discovery endpoint                                |
+| OIDC METADATA       | https://login.example.eks/~/.well-known/openid-configuration  | Curity OIDC metadata discovery endpoint                         |
+| EXAMPLE API         | https://api.example.eks/echo                                  | API endpoint protected by phantom-token flow                    |
 
 
 
