@@ -214,10 +214,10 @@ tear_down_environment() {
   then
     helm uninstall curity -n "${idsvr_namespace}" || true
     helm uninstall ingress-nginx -n ingress-nginx || true
-    delete_acm_certificate
     kubectl delete -f simple-echo-api-config/simple-echo-api-k8s-deployment.yaml -n "${api_namespace}" || true
-    
-    eksctl delete cluster -f cluster-config/cluster-cfg.yaml
+    sleep 5 # sleep for 5 seconds before deleting acm certificates
+    delete_acm_certificate || true
+    eksctl delete cluster -f cluster-config/cluster-cfg.yaml || true
     echo -e "\n" 
   else
     echo "Aborting the operation .."
