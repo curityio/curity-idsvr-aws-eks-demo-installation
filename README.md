@@ -102,7 +102,7 @@ All of the services are running privately in the aws elastic kubernetes cluster 
 
 
 
-For a detailed step by step installation instructions, please refer to Installing the Curity Identity Server in AWS EKS article.
+For a detailed step by step installation instructions, please refer to [Installing the Curity Identity Server in AWS EKS](https://curity.io/resources/learn/kubernetes-aws-eks-idsvr-deployment) article.
 
 ## More Information
 
