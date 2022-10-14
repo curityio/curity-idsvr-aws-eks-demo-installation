@@ -205,7 +205,7 @@ deploy_idsvr() {
 
 get_load_balancer_public_ip() {
   ALL_LB_DATA=$(aws elb describe-load-balancers)
-  aws eks update-kubeconfig --region eu-west-1 --name "$cluster_name"
+  aws eks update-kubeconfig --region "$region" --name "$cluster_name"
   LB_DNS=$(kubectl -n ingress-nginx get svc ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") 
   LB_NAME=$(jq -r -n --argjson data "$ALL_LB_DATA" "\$data.LoadBalancerDescriptions[] | select(.DNSName==\"$LB_DNS\") | .LoadBalancerName")
 
