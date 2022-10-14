@@ -10,3 +10,15 @@ cluster-config/cluster-cfg.yaml
 .DS*
 idsvr-config/templates/deployed-idsvr-helm.yaml
 templates
+.terraform
+.terraform.lock.hcl
+terraform.tfstate
+terraform-config/.terraform.tfstate.lock.info
+terraform-config/terraform.tfstate.backup
+terraform-config/1.4-vpc-creation.auto.tfvars
+terraform-config/2.4-eks-cluster-deployment.auto.tfvars
+.gitignore
+.gitignore
+terraform-config/4.3-curity-idsvr-deployment.auto.tfvars
+.gitignore
+terraform-config/5.3-example-api-deployment.auto.tfvars

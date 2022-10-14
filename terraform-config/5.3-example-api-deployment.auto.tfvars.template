@@ -1,0 +1,3 @@
+# Example API deployment variables template filled from infrastructure-config/infra-config.json
+
+api_namespace = "${api_namespace}"

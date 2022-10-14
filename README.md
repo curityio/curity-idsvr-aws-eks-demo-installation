@@ -39,7 +39,7 @@ All of the services are running privately in the aws elastic kubernetes cluster 
 
  2. Configuration
  
-    Cluster options could be configured by modifying `cluster-config/eks-cluster-config.json` file. Please ensure that the region set in the `cluster-config/eks-cluster-config.json` must match the region set for aws cli (~/.aws/config).
+    Cluster options could be configured by modifying `infrastructure-config/infra-config.json` file. Please ensure that the region set in the `infrastructure-config/infra-config.json` must match the region set for aws cli (~/.aws/config).
 
 
  3. Install the environment  
@@ -71,7 +71,7 @@ All of the services are running privately in the aws elastic kubernetes cluster 
      kubectl -n curity logs -f -l role=curity-idsvr-runtime
      kubectl -n curity logs -f -l role=curity-idsvr-admin  
      kubectl -n ingress-nginx logs -f -l app.kubernetes.io/component=controller
-     kubectl -n api logs -f -l app=simple-echo-api
+     kubectl -n api logs -f -l app=example-api
     ```
 
 

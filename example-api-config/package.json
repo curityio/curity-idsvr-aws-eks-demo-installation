@@ -1,7 +1,7 @@
 {
-  "name": "simple-api",
+  "name": "example-api",
   "version": "1.0.0",
-  "description": "This is simple api that echoes back the received token",
+  "description": "This is an example api that echoes back the received token",
   "main": "api.js",
   
   "scripts": {
