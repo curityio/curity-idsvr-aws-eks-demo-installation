@@ -14,9 +14,8 @@ curity:
             items:
               - key: license.json
                 path: license/license.json
-    configurationSecret: idsvr-config
-    configurationSecretItemName: idsvr-cluster-config.xml
-
+              - key: idsvr-cluster-config.xml
+                path: idsvr-cluster-config.xml 
   admin:
     logging:
       level: $logging_level

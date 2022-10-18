@@ -12,8 +12,8 @@ spec:
         app: example-api
     spec:
       containers:
-      - name: example-echo-api
-        image: curity/simple-echo-api:1.0
+      - name: example-api
+        image: curity/example-api:1.0
         env:
         - name: ISSUER
           value: "https://login.example.eks/~"

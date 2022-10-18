@@ -15,6 +15,7 @@ Deployment on AWS EKS has the following prerequisites:
 * [Helm](https://helm.sh/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/)
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
+* [terraform](https://www.terraform.io/downloads)
 * [OpenSSL](https://www.openssl.org/)
 * [jq](https://stedolan.github.io/jq/) 
 

@@ -32,8 +32,8 @@ greeting_message() {
 
 pre_requisites_check() {
   # Check if aws cli, kubectl, eksctl, helm & jq are installed
-  if ! [[ $(aws --version) && $(helm version) && $(jq --version) && $(eksctl version) && $(terraform version) ]]; then
-      echo "Please install aws cli, kubectl, eksctl, terraform, helm & jq to continue with the deployment .."
+  if ! [[ $(aws --version) && $(helm version) && $(jq --version) && ($(eksctl version) || $(terraform version)) ]]; then
+      echo "Please install aws cli, kubectl, helm, jq, eksctl and/or terraform to continue with the deployment .."
       exit 1 
   fi
 
@@ -267,7 +267,17 @@ tear_down_environment() {
    echo "|-----------------------------------------------------------------|"
 
    cd terraform-config
-   terraform destroy -auto-approve  
+   
+   n=0
+   until [ "$n" -ge 3 ]
+   do
+      terraform destroy -auto-approve && break  
+      n=$((n+1)) 
+      echo "terraform couldn't finish cleanup due to errors, Waiting for 20 seconds and then retrying again"
+      sleep 20
+      echo "Retry attempt # $n ..."
+   done
+
   elif [[ $REPLY =~ ^[Yy]$ && -f eksctl-config/cluster-cfg.yaml ]]
   then    
     echo "eksctl config file detected, proceeding with eksctl cleanup .."
@@ -276,7 +286,15 @@ tear_down_environment() {
     kubectl delete -f example-api-config/example-api-k8s-deployment.yaml -n "${api_namespace}" || true
     sleep 5 # sleep for 5 seconds before deleting acm certificates
     delete_acm_certificate || true
-    eksctl delete cluster -f eksctl-config/cluster-cfg.yaml || true
+    n=0
+    until [ "$n" -ge 3 ]
+    do
+       eksctl delete cluster -f eksctl-config/cluster-cfg.yaml && break  
+       n=$((n+1)) 
+       echo "eksctl couldn't finish cleanup due to errors, Waiting for 20 seconds and then retrying again"
+       sleep 20
+       echo "Retry attempt # $n ..."
+    done
     echo -e "\n" 
     exit 1
   else
