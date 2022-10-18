@@ -174,7 +174,7 @@ deploy_ingress_controller() {
   helm upgrade --install ingress-nginx ingress-nginx \
     --repo https://kubernetes.github.io/ingress-nginx \
     --values ingress-nginx-config/helm-values.yaml \
-    --set service.beta.kubernetes.io/aws-load-balancer-ssl-cert="$cert_arn" \
+    --set controller.service.annotations.service.beta.kubernetes.io/aws-load-balancer-ssl-cert="$cert_arn" \
     --namespace ingress-nginx --create-namespace
   
   echo -e "\n"

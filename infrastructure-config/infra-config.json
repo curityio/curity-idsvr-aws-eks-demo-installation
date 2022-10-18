@@ -61,7 +61,7 @@
     },
     {
       "Name": "nodegroup_name",
-      "Value": "curtiy-idsvr-ng",
+      "Value": "curity-idsvr-ng",
       "Description": "eks cluster managed nodegroup name"
     },
     {
