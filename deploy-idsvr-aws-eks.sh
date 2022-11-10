@@ -6,11 +6,12 @@ display_help() {
     echo "** DESCRIPTION **"
     echo -e "This script can be used to deploy Curity Identity Server in AWS Elastic kubernetes cluster. \n"
     echo -e "OPTIONS \n"
-    echo " --help      shows this help message and exit                                                                 "
-    echo " --install   creates a eks cluster & deploys curity identity server along with other components               "
-    echo " --start     starts up the environment                                                                        "
-    echo " --stop      shuts down the environment                                                                       "
-    echo " --delete    deletes the eks k8s cluster & identity server deployment                                         "
+    echo " --help                         shows this help message and exit                                                                 "
+    echo " --install                      creates a eks cluster & deploys curity identity server along with other components               "
+    echo " --start                        starts up the environment                                                                        "
+    echo " --stop                         shuts down the environment                                                                       "
+    echo " --load-balancer-public-ip      prints the public IP address of the load balancer                                                "
+    echo " --delete                       deletes the eks k8s cluster & identity server deployment                                         "
 }
 
 
@@ -24,8 +25,8 @@ greeting_message() {
   echo "| [2] CURITY IDENTITY SERVER ADMIN NODE                                      |"
   echo "| [3] CURITY IDENTITY SERVER RUNTIME NODE                                    |"
   echo "| [4] NGINX INGRESS CONTROLLER                                               |"
-  echo "| [6] NGINX PHANTOM TOKEN PLUGIN                                             |"
-  echo "| [7] EXAMPLE NODEJS API                                                     |"
+  echo "| [5] NGINX PHANTOM TOKEN PLUGIN                                             |"
+  echo "| [6] EXAMPLE NODEJS API                                                     |"
   echo "|----------------------------------------------------------------------------|" 
 }
 
@@ -174,7 +175,7 @@ deploy_ingress_controller() {
   helm upgrade --install ingress-nginx ingress-nginx \
     --repo https://kubernetes.github.io/ingress-nginx \
     --values ingress-nginx-config/helm-values.yaml \
-    --set controller.service.annotations.service.beta.kubernetes.io/aws-load-balancer-ssl-cert="$cert_arn" \
+    --set "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-ssl-cert"="$cert_arn" \
     --namespace ingress-nginx --create-namespace
   
   echo -e "\n"
@@ -210,6 +211,7 @@ get_load_balancer_public_ip() {
   LB_NAME=$(jq -r -n --argjson data "$ALL_LB_DATA" "\$data.LoadBalancerDescriptions[] | select(.DNSName==\"$LB_DNS\") | .LoadBalancerName")
 
   LB_IP=$(aws ec2 describe-network-interfaces --filters Name=description,Values="ELB $LB_NAME" --query 'NetworkInterfaces[0].Association.PublicIp' --output text)
+  echo "Public IP address of the LoadBalancer is : $LB_IP"
 
 }
 
@@ -284,7 +286,7 @@ tear_down_environment() {
     helm uninstall curity -n "${idsvr_namespace}" || true
     helm uninstall ingress-nginx -n ingress-nginx || true
     kubectl delete -f example-api-config/example-api-k8s-deployment.yaml -n "${api_namespace}" || true
-    sleep 5 # sleep for 5 seconds before deleting acm certificates
+    sleep 10 # sleep for 10 seconds before deleting acm certificates
     delete_acm_certificate || true
     n=0
     until [ "$n" -ge 3 ]
@@ -304,12 +306,18 @@ tear_down_environment() {
 
 
 environment_info() {
-  echo "Waiting for LoadBalancer's External IP, sleeping for 60 seconds ..."
-  sleep 60
+  echo "Waiting for LoadBalancer's External IP, sleeping for 90 seconds ..."
+  sleep 90
   
   get_load_balancer_public_ip
+  echo -e "\n"
 
-  if [ -z "$LB_IP" ]; then LB_IP="<LoadBalancer-IP>"; fi
+  if [ -z "$LB_IP" ] || [ "$LB_IP" == "None" ]; 
+  then 
+    LB_IP="<LoadBalancer-IP>";
+    echo "LoadBalancer IP couldn't be found, please run the following command to fetch the IP address manually or copy it from the AWS console."
+    echo "./deploy-idsvr-aws-eks.sh --load-balancer-public-ip"
+  fi
   
   echo -e "\n"
   
@@ -351,6 +359,10 @@ case $1 in
   --stop)
     read_infra_config_file
     shutdown_environment
+    ;;
+  --load-balancer-public-ip)
+    read_infra_config_file
+    get_load_balancer_public_ip
     ;;
   -h | --help)
     display_help

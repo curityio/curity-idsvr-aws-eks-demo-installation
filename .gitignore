@@ -3,13 +3,13 @@ idsvr-config/license.json
 idsvr-config/helm-values.yaml
 idsvr-config/templates/*
 ingress-nginx-config/helm-values.yaml
+eksctl-config/cluster-cfg.yaml
 
 # Self signed certficates
 certs/*.pem
 certs/*.key
 certs/*.csr  
 certs/*.srl
-
 
 # Local .terraform directories
 **/.terraform/*
