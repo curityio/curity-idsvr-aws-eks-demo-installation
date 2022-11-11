@@ -8,7 +8,7 @@ metadata:
       phantom_token_client_credential api-gateway-client Password123;
       phantom_token_introspection_endpoint curity;
       phantom_token_scopes read;
-      error_log  /var/log/nginx/error.log  debug;
+      error_log  /var/log/nginx/error.log  info;
     nginx.ingress.kubernetes.io/server-snippet: |
       location curity {
           proxy_pass http://curity-idsvr-runtime-svc.curity.svc.cluster.local:8443/oauth/v2/oauth-introspect;

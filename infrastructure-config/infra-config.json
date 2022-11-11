@@ -84,7 +84,7 @@
     {
       "Name": "idsvr_namespace",
       "Value": "curity",
-      "Description": "Name of the k8s namespace to deploy curity identity server"
+      "Description": "Name of the k8s namespace to deploy the Curity Identity Server"
     },
     {
       "Name": "ingress_controller_namespace",

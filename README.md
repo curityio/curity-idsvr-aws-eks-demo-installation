@@ -40,7 +40,7 @@ All of the services are running privately in the aws elastic kubernetes cluster 
 
  2. Configuration
  
-    Cluster options could be configured by modifying `infrastructure-config/infra-config.json` file. Please ensure that the region set in the `infrastructure-config/infra-config.json` must match the region set for aws cli (~/.aws/config).
+    Cluster options could be configured by modifying `infrastructure-config/infra-config.json` file. Please note that the region set in the `infrastructure-config/infra-config.json` must match the region set for aws cli (~/.aws/config).
 
 
  3. Install the environment  
@@ -81,15 +81,16 @@ All of the services are running privately in the aws elastic kubernetes cluster 
       Usage: manage-environment.sh [-h | --help] [-i | --install]  [-d | --delete]
 
       ** DESCRIPTION **
-      This script can be used to manage a eks cluster and Curity identity server installation.
+      This script can be used to manage a eks cluster and Curity Identity Server installation.
 
       OPTIONS
 
-      --help      show this help message and exit
-      --install   creates eks cluster & deploys Curity identity server along with other components
-      --start     starts the environment   
-      --stop      shuts down the environment
-      --delete    deletes the eks k8s cluster & identity server deployment
+      --help                        show this help message and exit
+      --install                     creates eks cluster & deploys Curity Identity Server along with other components
+      --start                       starts the environment   
+      --stop                        shuts down the environment
+      --load-balancer-public-ip     prints the public IP address of the load balancer                                                
+      --delete                      deletes the eks cluster & Curity Identity Server deployment
     ```
    
 
