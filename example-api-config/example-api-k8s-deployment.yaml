@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-api
+spec:
+  selector:
+    matchLabels:
+      app: example-api
+  template:
+    metadata:
+      labels:
+        app: example-api
+    spec:
+      containers:
+      - name: example-api
+        image: curity/example-api:1.0
+        env:
+        - name: ISSUER
+          value: "https://login.example.eks/~"
+        ports:
+        - containerPort: 3000

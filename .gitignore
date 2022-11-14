@@ -1,12 +1,35 @@
+# Idsvr files
 idsvr-config/license.json
 idsvr-config/helm-values.yaml
+idsvr-config/templates/*
 ingress-nginx-config/helm-values.yaml
-examples/*.yaml
+eksctl-config/cluster-cfg.yaml
+
+# Self signed certficates
 certs/*.pem
 certs/*.key
 certs/*.csr  
 certs/*.srl
-cluster-config/cluster-cfg.yaml
-.DS*
-idsvr-config/templates/deployed-idsvr-helm.yaml
-templates
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+
+# terraform variable files
+*.tfvars
+*.tfvars.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Dependency directories
+node_modules/
+**/package-lock.json
+
+.DS_Store

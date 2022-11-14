@@ -13,11 +13,11 @@ const validationOptions = {
   claims: [
     {
       name: 'iss',
-      value: process.env.ISSUER // set from simple-echo-api-k8s-deployment.yaml
+      value: process.env.ISSUER // set from example-api-k8s-deployment.yaml
     },
     {
       name: 'aud',
-      value: 'simple-echo-api'
+      value: 'example-api'
     }
   ],
   scope: ['read']
@@ -38,4 +38,4 @@ app.get('/echo', middleware, (req, res) => {
   res.status(200).send(JSON.stringify(data));
 });
 
-app.listen(port, () => console.log(`Simple Echo API listening on port : ${port}`));
+app.listen(port, () => console.log(`Example API listening on port : ${port}`));

@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      phantom_token on;
+      phantom_token_client_credential api-gateway-client Password123;
+      phantom_token_introspection_endpoint curity;
+      phantom_token_scopes read;
+      error_log  /var/log/nginx/error.log  info;
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location curity {
+          proxy_pass http://curity-idsvr-runtime-svc.curity.svc.cluster.local:8443/oauth/v2/oauth-introspect;
+          proxy_cache_methods POST;
+          proxy_cache api_cache;
+          proxy_cache_key §request_body;
+          proxy_ignore_headers Set-Cookie;
+      }
+  name: example-api-ingress
+spec:
+  rules:
+  - host: api.example.eks
+    http:
+      paths:
+      - backend:
+          service:
+            name: example-api-service
+            port:
+              name: http-port
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - api.example.eks
+    secretName: example-eks-tls

@@ -1,4 +1,43 @@
 {
+  "aws-profile": [
+    {
+      "Name": "aws_profile_name",
+      "Value": "default",
+      "Description": "Name of the AWS profile to use for aws authentication"
+    } ,
+    {
+      "Name": "region",
+      "Value": "eu-west-1",
+      "Description": "AWS Region for deployment"
+    } 
+  ],
+  "aws-vpc-config": [
+    {
+      "Name": "vpc_name",
+      "Value": "curity-demo",
+      "Description": "Name of the VPC"
+    },
+    {
+      "Name": "vpc_cidr",
+      "Value": "10.0.0.0/16",
+      "Description": "VPC CIDR range"
+    },
+    {
+      "Name": "vpc_public_subnets_cidr",
+      "Value": "\"10.0.101.0/24\", \"10.0.102.0/24\"",
+      "Description": "Public subnets CIDR range"
+    },
+    {
+      "Name": "vpc_private_subnets_cidr",
+      "Value": "\"10.0.1.0/24\", \"10.0.2.0/24\"",
+      "Description": "Private subnets CIDR range"
+    },
+    {
+      "Name": "availability_zones",
+      "Value": "\"eu-west-1a\",\"eu-west-1b\"",
+      "Description": "Region's availability zones to span the VPC"
+    }
+  ],
   "eks-cluster-config": [
     {
       "Name": "cluster_name",
@@ -9,21 +48,6 @@
       "Name": "cluster_version",
       "Value": "1.22",
       "Description": "Version of the k8s cluster"
-    },
-    {
-      "Name": "region",
-      "Value": "eu-west-1",
-      "Description": "AWS Region to deploy the k8s cluster"
-    },
-    {
-      "Name": "availability_zones",
-      "Value": "\"eu-west-1a\",\"eu-west-1b\"",
-      "Description": "Region's availability zones to span the k8s cluster"
-    },
-    {
-      "Name": "vpc_cidr",
-      "Value": "10.10.0.0/16",
-      "Description": "VPC CIDR range"
     },
     {
       "Name": "instance_type",
@@ -37,30 +61,36 @@
     },
     {
       "Name": "nodegroup_name",
-      "Type": "String",
-      "Value": "curtiy-idsvr-ng",
+      "Value": "curity-idsvr-ng",
       "Description": "eks cluster managed nodegroup name"
     },
     {
       "Name": "nodegroup_min_size",
-      "Type": "String",
       "Value": "2",
       "Description": "minimum size of the node group"
     },
     {
       "Name": "nodegroup_desired_size",
-      "Type": "String",
       "Value": "2",
       "Description": "desired size of the node group"
     },
     {
       "Name": "nodegroup_max_size",
-      "Type": "String",
       "Value": "4",
       "Description": "maximum size of the nodegroup"
     }
   ],
   "idsvr-config": [
+    {
+      "Name": "idsvr_namespace",
+      "Value": "curity",
+      "Description": "Name of the k8s namespace to deploy the Curity Identity Server"
+    },
+    {
+      "Name": "ingress_controller_namespace",
+      "Value": "ingress-nginx",
+      "Description": "Name of the k8s namespace to deploy NGINX Ingress Controller"
+    },
     {
       "Name": "admin_hostname",
       "Value": "admin.example.eks",
@@ -82,21 +112,16 @@
       "Description": "password for curity identity server admin console"
     },
     {
-      "Name": "idsvr_namespace",
-      "Value": "curity",
-      "Description": "Name of the k8s namespace to deploy curity identity server"
-    },
-    {
       "Name": "logging_level",
       "Value": "DEBUG",
       "Description": "Logging Level for admin and runtime services"
     }
   ],
-  "simple-api-config": [
+  "example-api-config": [
     {
       "Name": "api_namespace",
       "Value": "api",
-      "Description": "Name of the k8s namespace to deploy simple sample api"
+      "Description": "Name of the k8s namespace to deploy example api"
     }    
   ]
 }

@@ -6,35 +6,35 @@ display_help() {
     echo "** DESCRIPTION **"
     echo -e "This script can be used to deploy Curity Identity Server in AWS Elastic kubernetes cluster. \n"
     echo -e "OPTIONS \n"
-    echo " --help      shows this help message and exit                                                                 "
-    echo " --install   creates a eks cluster & deploys curity identity server along with other components               "
-    echo " --start     starts up the environment                                                                        "
-    echo " --stop      shuts down the environment                                                                       "
-    echo " --delete    deletes the eks k8s cluster & identity server deployment                                         "
+    echo " --help                         shows this help message and exit                                                                 "
+    echo " --install                      creates a eks cluster & deploys curity identity server along with other components               "
+    echo " --start                        starts up the environment                                                                        "
+    echo " --stop                         shuts down the environment                                                                       "
+    echo " --load-balancer-public-ip      prints the public IP address of the load balancer                                                "
+    echo " --delete                       deletes the eks k8s cluster & identity server deployment                                         "
 }
 
 
 greeting_message() {
   echo "|----------------------------------------------------------------------------|"
-  echo "|  AWS Kubernetes Engine based Curity Identity Server Installation           |"
+  echo "|  AWS Kubernetes Engine based Curity Identity Server Deployment             |"
   echo "|----------------------------------------------------------------------------|"
-  echo "|  Following components are going to be installed :                          |"
+  echo "|  Following components are going to be deployed :                           |"
   echo "|----------------------------------------------------------------------------|"
   echo "| [1] AWS EKS KUBERNETES CLUSTER                                             |"
   echo "| [2] CURITY IDENTITY SERVER ADMIN NODE                                      |"
   echo "| [3] CURITY IDENTITY SERVER RUNTIME NODE                                    |"
   echo "| [4] NGINX INGRESS CONTROLLER                                               |"
-  echo "| [6] NGINX PHANTOM TOKEN PLUGIN                                             |"
-  echo "| [7] EXAMPLE NODEJS API                                                     |"
+  echo "| [5] NGINX PHANTOM TOKEN PLUGIN                                             |"
+  echo "| [6] EXAMPLE NODEJS API                                                     |"
   echo "|----------------------------------------------------------------------------|" 
-  echo -e "\n"
 }
 
 
 pre_requisites_check() {
   # Check if aws cli, kubectl, eksctl, helm & jq are installed
-  if ! [[ $(aws --version) && $(helm version) && $(jq --version) && $(eksctl version) ]]; then
-      echo "Please install aws cli, kubectl, eksctl, helm & jq to continue with the deployment .."
+  if ! [[ $(aws --version) && $(helm version) && $(jq --version) && ($(eksctl version) || $(terraform version)) ]]; then
+      echo "Please install aws cli, kubectl, helm, jq, eksctl and/or terraform to continue with the deployment .."
       exit 1 
   fi
 
@@ -51,33 +51,14 @@ pre_requisites_check() {
 }
 
 
-read_cluster_config_file() {
-  echo "Reading the configuration from cluster-config/eks-cluster-config.json .."
+read_infra_config_file() {
+  echo "Reading the configuration from infrastructure-config/infra-config.json .."
   while read -r NAME; read -r VALUE; do
     if [ -z "$NAME" ]; then break; fi
 
   export "$NAME"="$VALUE" 
 
-  done <<< "$(jq -rc '.[] | .[] | "\(.Name)\n\(.Value)"' "cluster-config/eks-cluster-config.json")"
-}
-
-
-create_eks_cluster() {
-  read -p "Do you want to create a new eks cluster for deploying Curity Identity server ? [Y/y N/n] :" -n 1 -r
-  echo -e "\n"
-
-  if [[ $REPLY =~ ^[Yy]$ ]]
-  then
-    generate_self_signed_certificates
-    envsubst < cluster-config/cluster-cfg.yaml.template > cluster-config/cluster-cfg.yaml
-    
-    echo -e "Creating EKS cluster for deployment..."
-    eksctl create cluster -f cluster-config/cluster-cfg.yaml
-  else
-    echo "Not creating a new k8s cluster, assuming that an existing cluster is already available for deployment ..."
-  fi
- 
-  echo -e "\n"
+  done <<< "$(jq -rc '.[] | .[] | "\(.Name)\n\(.Value)"' "infrastructure-config/infra-config.json")"
 }
 
 
@@ -87,7 +68,7 @@ is_pki_already_available() {
     echo -e "example.eks.ssl.key & example.eks.ssl.pem certificates already exist.., skipping regeneration of certificates\n"
     true
   else
-    echo -e "Generating example.eks.ssl.key,example.eks.ssl.pem certificates using local domain names from cluster-config/eks-cluster-config.json..\n"
+    echo -e "Generating example.eks.ssl.key,example.eks.ssl.pem certificates using local domain names from infrastructure-config/infra-config.json..\n"
     false
   fi
 }
@@ -99,6 +80,65 @@ generate_self_signed_certificates() {
     echo -e "\n"
   fi
 }
+
+
+fill_templates() {
+  envsubst < terraform-config/1.4-vpc-creation.auto.tfvars.template > terraform-config/1.4-vpc-creation.auto.tfvars
+  envsubst < terraform-config/2.4-eks-cluster-deployment.auto.tfvars.template > terraform-config/2.4-eks-cluster-deployment.auto.tfvars
+  envsubst < terraform-config/4.3-curity-idsvr-deployment.auto.tfvars.template > terraform-config/4.3-curity-idsvr-deployment.auto.tfvars
+  envsubst < terraform-config/5.3-example-api-deployment.auto.tfvars.template > terraform-config/5.3-example-api-deployment.auto.tfvars
+
+  envsubst < idsvr-config/helm-values.yaml.template > idsvr-config/helm-values.yaml
+  envsubst < ingress-nginx-config/helm-values.yaml.template > ingress-nginx-config/helm-values.yaml
+}
+
+
+determine_eks_cluster_creation_type() {
+    echo -e "\n"
+    echo "Choose one of the following options to proceed further :         "
+    echo "|-----------------------------------------------------------------|"
+    echo "| [1]  EKSCTL     => EKS cluster deployment using eksctl          |"
+    echo "| [2]  TERRAFORM  => EKS cluster deployment using terraform       |"
+    echo "|-----------------------------------------------------------------|"
+
+    read -rp "What type of deployment [1 or 2] ? : " choiceDeploy
+    case "$choiceDeploy" in
+      1 ) create_eks_cluster_using_eksctl  ;;
+      2 ) create_eks_cluster_using_terraform ;;
+      * ) echo "Invalid choice"  
+          exit 1 ;;
+    esac  
+  echo -e "\n"
+
+}
+
+
+create_eks_cluster_using_eksctl() {
+    generate_self_signed_certificates
+    envsubst < eksctl-config/cluster-cfg.yaml.template > eksctl-config/cluster-cfg.yaml
+
+    echo -e "Creating EKS cluster for deployment using eksctl..."
+    eksctl create cluster -f eksctl-config/cluster-cfg.yaml
+    
+    echo -e "\n"
+    deploy_idsvr
+}
+
+
+create_eks_cluster_using_terraform() {
+    generate_self_signed_certificates
+    echo -e "Creating EKS cluster for deployment using terraform..."
+    fill_templates
+      
+    cd terraform-config
+    terraform init
+    terraform validate
+    terraform apply -auto-approve
+    
+    environment_info    
+    echo -e "\n"
+}
+
 
 # Imports Self-signed certificates to AWS ACM so that they can be used in the LoadBalancer SSL configuration
 import_certificate_to_aws_acm() {
@@ -121,6 +161,7 @@ delete_acm_certificate(){
     
 }
 
+
 deploy_ingress_controller() {
   import_certificate_to_aws_acm
   echo -e "Deploying Nginx ingress controller & adding phantom token plugin in the k8s cluster ...\n"
@@ -134,8 +175,11 @@ deploy_ingress_controller() {
   helm upgrade --install ingress-nginx ingress-nginx \
     --repo https://kubernetes.github.io/ingress-nginx \
     --values ingress-nginx-config/helm-values.yaml \
+    --set "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-ssl-cert"="$cert_arn" \
     --namespace ingress-nginx --create-namespace
+  
   echo -e "\n"
+  environment_info
 }
 
 
@@ -154,31 +198,36 @@ deploy_idsvr() {
   # Copy the deployed artifacts to idsvr-config/template directory for reviewing 
   mkdir -p idsvr-config/templates
   helm template curity curity/idsvr --values idsvr-config/helm-values.yaml > idsvr-config/templates/deployed-idsvr-helm.yaml
+  
   echo -e "\n"
+  deploy_example_api
 }
 
 
 get_load_balancer_public_ip() {
   ALL_LB_DATA=$(aws elb describe-load-balancers)
+  aws eks update-kubeconfig --region "$region" --name "$cluster_name"
   LB_DNS=$(kubectl -n ingress-nginx get svc ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].hostname}") 
   LB_NAME=$(jq -r -n --argjson data "$ALL_LB_DATA" "\$data.LoadBalancerDescriptions[] | select(.DNSName==\"$LB_DNS\") | .LoadBalancerName")
 
   LB_IP=$(aws ec2 describe-network-interfaces --filters Name=description,Values="ELB $LB_NAME" --query 'NetworkInterfaces[0].Association.PublicIp' --output text)
+  echo "Public IP address of the LoadBalancer is : $LB_IP"
 
 }
 
 
-deploy_simple_echo_api() {
-  echo -e "Deploying simple echo api in the k8s cluster ...\n"
+deploy_example_api() {
+  echo -e "Deploying example api in the k8s cluster ...\n"
   kubectl create namespace "$api_namespace" || true
 
  # create secrets for TLS termination at ingress layer
   kubectl create secret tls example-eks-tls --cert=certs/example.eks.ssl.pem --key=certs/example.eks.ssl.key  -n "$api_namespace"
 
-  kubectl apply -f simple-echo-api-config/echo-api-ingress-nginx.yaml -n "${api_namespace}"
-  kubectl apply -f simple-echo-api-config/simple-echo-api-k8s-deployment.yaml -n "${api_namespace}"
+  kubectl apply -f example-api-config/example-api-ingress-nginx.yaml -n "${api_namespace}"
+  kubectl apply -f example-api-config/example-api-k8s-deployment.yaml -n "${api_namespace}"
   
   echo -e "\n"
+  deploy_ingress_controller
 }
 
 
@@ -209,30 +258,66 @@ shutdown_environment() {
 tear_down_environment() {
   read -p "Identity server deployment and k8s cluster would be deleted, Are you sure? [Y/y N/n] :" -n 1 -r
   echo -e "\n"
-
-  if [[ $REPLY =~ ^[Yy]$ ]]
+  
+  if [[ $REPLY =~ ^[Yy]$ && -f terraform-config/terraform.tfstate ]]
   then
+   echo "terraform state file detected, proceeding with terraform cleanup .."
+
+   echo "|-----------------------------------------------------------------|"
+   echo "| If an error \"Error: context deadline exceeded\" is thrown        |"
+   echo "| then please run the deletion script again                       |"
+   echo "|-----------------------------------------------------------------|"
+
+   cd terraform-config
+   
+   n=0
+   until [ "$n" -ge 3 ]
+   do
+      terraform destroy -auto-approve && break  
+      n=$((n+1)) 
+      echo "terraform couldn't finish cleanup due to errors, Waiting for 20 seconds and then retrying again"
+      sleep 20
+      echo "Retry attempt # $n ..."
+   done
+
+  elif [[ $REPLY =~ ^[Yy]$ && -f eksctl-config/cluster-cfg.yaml ]]
+  then    
+    echo "eksctl config file detected, proceeding with eksctl cleanup .."
     helm uninstall curity -n "${idsvr_namespace}" || true
     helm uninstall ingress-nginx -n ingress-nginx || true
-    kubectl delete -f simple-echo-api-config/simple-echo-api-k8s-deployment.yaml -n "${api_namespace}" || true
-    sleep 5 # sleep for 5 seconds before deleting acm certificates
+    kubectl delete -f example-api-config/example-api-k8s-deployment.yaml -n "${api_namespace}" || true
+    sleep 10 # sleep for 10 seconds before deleting acm certificates
     delete_acm_certificate || true
-    eksctl delete cluster -f cluster-config/cluster-cfg.yaml || true
+    n=0
+    until [ "$n" -ge 3 ]
+    do
+       eksctl delete cluster -f eksctl-config/cluster-cfg.yaml && break  
+       n=$((n+1)) 
+       echo "eksctl couldn't finish cleanup due to errors, Waiting for 20 seconds and then retrying again"
+       sleep 20
+       echo "Retry attempt # $n ..."
+    done
     echo -e "\n" 
-  else
-    echo "Aborting the operation .."
     exit 1
+  else
+   echo "Aborting the operation .."
   fi
 }
 
 
 environment_info() {
-  echo "Waiting for LoadBalancer's External IP, sleeping for 60 seconds ..."
-  sleep 60
+  echo "Waiting for LoadBalancer's External IP, sleeping for 90 seconds ..."
+  sleep 90
   
   get_load_balancer_public_ip
+  echo -e "\n"
 
-  if [ -z "$LB_IP" ]; then LB_IP="<LoadBalancer-IP>"; fi
+  if [ -z "$LB_IP" ] || [ "$LB_IP" == "None" ]; 
+  then 
+    LB_IP="<LoadBalancer-IP>";
+    echo "LoadBalancer IP couldn't be found, please run the following command to fetch the IP address manually or copy it from the AWS console."
+    echo "./deploy-idsvr-aws-eks.sh --load-balancer-public-ip"
+  fi
   
   echo -e "\n"
   
@@ -242,7 +327,7 @@ environment_info() {
   echo "|                                                                                                                                                  |"
   echo "| [ADMIN UI]        https://admin.example.eks/admin                                                                                                |"
   echo "| [OIDC METADATA]   https://login.example.eks/~/.well-known/openid-configuration                                                                   |"
-  echo "| [SIMPLE ECHO API] https://api.example.eks/echo                                                                                                   |"                                                                                                  
+  echo "| [EXAMPLE API]     https://api.example.eks/echo                                                                                                   |"                                                                                                  
   echo "|                                                                                                                                                  |"
   echo "|                                                                                                                                                  |"
   echo "| * Curity administrator username is : admin and password is : $idsvr_admin_password                                                                "
@@ -250,7 +335,6 @@ environment_info() {
   echo "|   $LB_IP  admin.example.eks login.example.eks api.example.eks entry to /etc/hosts                                                                 "
   echo "|--------------------------------------------------------------------------------------------------------------------------------------------------|" 
 }
-
 
 
 # ==========
@@ -261,24 +345,24 @@ case $1 in
   -i | --install)
     greeting_message
     pre_requisites_check
-    read_cluster_config_file
-    create_eks_cluster
-    deploy_idsvr
-    deploy_simple_echo_api
-    deploy_ingress_controller
-    environment_info
+    read_infra_config_file
+    determine_eks_cluster_creation_type
     ;;
   -d | --delete)
-    read_cluster_config_file
+    read_infra_config_file
     tear_down_environment
     ;;
   --start)
-    read_cluster_config_file
+    read_infra_config_file
     startup_environment
     ;;
   --stop)
-    read_cluster_config_file
+    read_infra_config_file
     shutdown_environment
+    ;;
+  --load-balancer-public-ip)
+    read_infra_config_file
+    get_load_balancer_public_ip
     ;;
   -h | --help)
     display_help

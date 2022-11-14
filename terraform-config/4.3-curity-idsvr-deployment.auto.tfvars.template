@@ -1,0 +1,4 @@
+# Idsvr deployment variables template filled from infrastructure-config/infra-config.json
+
+idsvr_namespace = "${idsvr_namespace}"
+ingress_controller_namespace = "${ingress_controller_namespace}"

@@ -2,11 +2,6 @@
   <environments xmlns="https://curity.se/ns/conf/base">
     <environment>
       <base-url>https://login.example.eks</base-url>
-      <cluster>
-        <keystore>v:S.dDZZWEV5bGowdjdWc3RjcA==.RlBxAcjUGQOgo8jd39DXPg==.4gWAF4KMaw9WUq6bbFIIRDfZvtgnUBfAe1XKe9J3bN8zAhItnOF3p418pTppugvQAjsTGpUaHgPQzxNeRIynIA+RDJHEi+K1Gsx1uY6gipsbx+fxbBTcYW5gSOTi/P1fWoIpqRkfCa49bR0mTPtD8VV2+VBTjF6K644Q79k48FrmXHyaAb2xZFVJcK2PD9FM3zjdLtgotpXfSc4pyni4aXTBSmLbfTZYs0j7B0D2V3iQ2zPaC3JSQ9zKu06s5yJIBt1G09SMLLbiyXca6S8UP78xFQNojo2ZoAYmWaGmmMGJL2HTUxWoEGwP0dTTaxxqNdSVFRWHSHUgGBUvbUvnXOi8b73vuAwFxd2L3vaoVIZPUP8tH+buVIAtJfLYBsQQRNVCgSO4I1kFtIAL0u4fWn6yfDllG8z6TbnhpQaWzjwbymf+bx3PGcjt0g+mxajywm70wToxGonfNO5/IXnCwHh6tJFRDWs7kf3ly1x7Gu66qeXYkhLB83ISxx1ePAU3s4uOE+j+1UBqnVIOO5HMcUY+O/m/OkXLWPpOF3i44UkZnt7hPYxlUYwwyqOME7M72FUu03N1UcefM2brmwCEvkzJelP5F9/eymU0LSq2NY4x/W2vPRcN8qxTVgLC0QZWXMAxbuU5/4rV2UOHnQQWiV8b4R7BFzLuu0m6rjhwH7agEvRBQ4rroKX2eayn8HBza/QZc6nhyz5YYeXlSBspcjVFmUfyFHas3I7hiwE1eJX8zMfTFBstKa9njSqcKuJAizIgthFpuM6uJdOfKySIuA3bGCZGJP3Qgfa/Z1nTuN3QLrp/TP8YNE5AHdM+rjHJT8nYoD2J66B633Ntf89YywCUBXLyCoMlMcMVH/DkHHysiRLADlxl4oG1WKszwZsR4bpCMugihWFZBGpi484EGHpQPGVEuheAeqd7K5J8cMoj9o5tCMyBCEkpR9Vqzw5THeMsMZplOG/U8VtdhNX9PRNijtpCEvwu+poEcq74KddeJNriqpiH2ws3cFsAfeHQyUfZbzTHlcM7oqb1H1YDkD7lUyFbojpDCprJH5WBUJT/R4uOEfYarSpplYt+GfKdV620cIj22iZNeIJH8prHiHkDjAp7a05QwmeHDKzRPCDrNdqbJNpSTkT0UrYUi39DtQSDtM6SOOCogLXC+ixarWWk7ImZTFXea+Rkp0nDLD4T5xNwgiPwaDGXr2Gt7sVpvVBf9VU9F4/PqEa+FD71fKrh101Il+8CVRaqD5QkPv8c6XwQ2w/Z8rKtELOC/N03zHsX74XFr72UAxIBb0bKy5NZ0Z4mKbRFD94DCkd7vwtZgCNRqOkjiaxmuKasocODIukWpATG4qfSYfqDkWYG7/gKQhh29WcpaGOGPybqimFfkaPpueqpuqirddgOyB70uG4B1nF3hehP78YL1JnCwb+8RVWTPPGEfDpLoeCrXde6nyFnYl2imMiqeOCR1Y+9gW+KnoVCAuo12/eRtSMS9t7IgDC2NFKHMyIBPvNfxMW0Eg0CycPDFc1e7omege1pZv6X60fanTHBzmHKT2zOozbpbCRS14SOv0/+PTLrYq3PIqQRyPskdPfh3f+3P7GI7BXUsYWTex5tptkKxGA5zb6aNmSsApof/R04flzXPd0=.Nwi9itd7yBkn9q9QSTwJZ5NxvYi7EDY292fL54ZsvDE=.MIICzDCCAbSgAwIBAgIILgR0XuqI9rYwDQYJKoZIhvcNAQELBQAwJjEkMCIGA1UEAxMbQ3VyaXR5SWRlbnRpdHlTZXJ2ZXJDbHVzdGVyMB4XDTIyMDQyNTE4MjgyNVoXDTMyMDQyMjE4MjgyNVowJjEkMCIGA1UEAxMbQ3VyaXR5SWRlbnRpdHlTZXJ2ZXJDbHVzdGVyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwAjYy7oc/Cv356tVs1Gd70vEf9hZV2VCzb6TxMGV8/AYXmQqKV4PnergoHKCGldjQz22VAidhgbKvs5a5rbfNeVKKXmBC2Jgo+IBzVQNs/budpU4rk7uRfeNjZDy5Sj7QnXRgwQ0a0cvPRsrSu4Q0w4jTeSgVZHJj4ZUoqY1Uq0n6Ey1QkR8teDP1gTatJlfwy0MD03/3f2x9sUeeHUQtZK9un+tWhDcLz70l+uih5HPultIpMFUq6+OJgFSspPXh0TkGF8L4MRGqI2Fhf4coLYBbbeXSpEUzWz+VRKDW8ZiA7EGWiz1myjvlUF5uKvlcA+Mzpo4inhiQUxwmnRj6QIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCEv6eSl6YZQg8yRJ+prAziKuKmGe3bohm0asyElmhQs2ahl+Y79TIxzlyAM+wF6iXLAr4Ukq/F4NIMUC4toCD24fzNoNhkxwy0qlzHPJBOCl6vefRkzryH8ohH27LluwPPC/4muW6nQ1sgZBC6CLSSKVkQvSl73M8hqym7RQ9KlRq4omhAkuTVz6fy7dEZpcJ2728KOV6s5exdSUU1t14XtV+vQZdOoKNtA55MCoo4DyCk2TFl29iWvGmWpNL8MslM8Uitdu1Y0FD3ve5aj/tj+zO/NtNSNxnsMigBQxcA+DTBNCyxvA62NbSDTlZomJX91/IVmN7SqmNVJxD24a24</keystore>
-        <host>curity-idsvr-admin-svc</host>
-        <port>6789</port>
-      </cluster>
       <admin-service>
         <http>
           <base-url>https://admin.example.eks</base-url>
@@ -326,16 +321,16 @@
                 </use-pairwise-subject-identifiers>
               </client>
               <client>
-                <id>simple-echo-api</id>
-                <client-name>simple-echo-api</client-name>
-                <description>simple-echo-api</description>
+                <id>example-api</id>
+                <client-name>example-api</client-name>
+                <description>example-api</description>
                 <secret>$5$z8OjAH/v11LglCTm$9dQUbtNL5.52toE4MzNlCzSKpG9eDsb7jIugpdLPzY9</secret>
                 <scope>read</scope>
                 <capabilities>
                   <client-credentials/>
                 </capabilities>
                 <use-pairwise-subject-identifiers>
-                  <sector-identifier>simple-echo-api</sector-identifier>
+                  <sector-identifier>example-api</sector-identifier>
                 </use-pairwise-subject-identifiers>
               </client>
               <client>
