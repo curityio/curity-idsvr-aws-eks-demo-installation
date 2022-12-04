@@ -14,7 +14,7 @@
   "aws-vpc-config": [
     {
       "Name": "vpc_name",
-      "Value": "curity-demo",
+      "Value": "curity-example",
       "Description": "Name of the VPC"
     },
     {
@@ -41,7 +41,7 @@
   "eks-cluster-config": [
     {
       "Name": "cluster_name",
-      "Value": "curity-demo",
+      "Value": "curity-example",
       "Description": "Name of the EKS cluster"
     },
     {

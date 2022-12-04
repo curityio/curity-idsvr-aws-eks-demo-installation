@@ -1,9 +1,16 @@
 # VPC Configuration 
-
 provider "aws" {
   region  = var.aws_region
   profile = var.aws_profile_name
 }
+
+# Uploads self signed certificates to ACM
+resource "aws_acm_certificate" "this" {
+  private_key       = file("${path.cwd}/../certs/example.eks.ssl.key")
+  certificate_body  = file("${path.cwd}/../certs/example.eks.ssl.pem")
+  certificate_chain = file("${path.cwd}/../certs/example.eks.ca.pem")
+}
+
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"

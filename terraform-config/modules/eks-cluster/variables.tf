@@ -10,6 +10,16 @@ variable "cluster_version" {
   type        = string
 }
 
+variable "vpc_id" {
+  description = "VPC Id"
+  type        = string
+}
+
+variable "private_subnets" {
+  description = "private subnets"
+  type        = list(string)
+}
+
 variable "eks_node_group_name" {
   description = "Name of the EKS node group"
   type        = string

@@ -83,10 +83,7 @@ generate_self_signed_certificates() {
 
 
 fill_templates() {
-  envsubst < terraform-config/1.4-vpc-creation.auto.tfvars.template > terraform-config/1.4-vpc-creation.auto.tfvars
-  envsubst < terraform-config/2.4-eks-cluster-deployment.auto.tfvars.template > terraform-config/2.4-eks-cluster-deployment.auto.tfvars
-  envsubst < terraform-config/4.3-curity-idsvr-deployment.auto.tfvars.template > terraform-config/4.3-curity-idsvr-deployment.auto.tfvars
-  envsubst < terraform-config/5.3-example-api-deployment.auto.tfvars.template > terraform-config/5.3-example-api-deployment.auto.tfvars
+  envsubst < terraform-config/main.auto.tfvars.template > terraform-config/main.auto.tfvars
 
   envsubst < idsvr-config/helm-values.yaml.template > idsvr-config/helm-values.yaml
   envsubst < ingress-nginx-config/helm-values.yaml.template > ingress-nginx-config/helm-values.yaml

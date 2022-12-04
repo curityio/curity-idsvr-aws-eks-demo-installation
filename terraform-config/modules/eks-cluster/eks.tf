@@ -17,8 +17,8 @@ module "eks" {
     }
   }
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id     = var.vpc_id
+  subnet_ids = var.private_subnets
 
   # Extend node-to-node security group rules
   node_security_group_additional_rules = {
