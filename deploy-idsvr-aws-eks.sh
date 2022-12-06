@@ -232,6 +232,7 @@ deploy_example_api() {
 
   kubectl apply -f example-api-config/example-api-ingress-nginx.yaml -n "${api_namespace}"
   kubectl apply -f example-api-config/example-api-k8s-deployment.yaml -n "${api_namespace}"
+  kubectl apply -f example-api-config/example-api-k8s-service.yaml -n "${api_namespace}"
   
   echo -e "\n"
   deploy_ingress_controller
