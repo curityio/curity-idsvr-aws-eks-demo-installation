@@ -20,3 +20,7 @@ output "public_subnets" {
   value       = module.vpc.public_subnets
 }
 
+output "acm_certificate_arn" {
+  description = "arn of acm certificate"
+  value       = aws_acm_certificate.this.arn
+}
