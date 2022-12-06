@@ -7,11 +7,11 @@ display_help() {
     echo -e "This script can be used to deploy Curity Identity Server in AWS Elastic kubernetes cluster. \n"
     echo -e "OPTIONS \n"
     echo " --help                         shows this help message and exit                                                                 "
-    echo " --install                      creates a eks cluster & deploys curity identity server along with other components               "
+    echo " --install                      creates an EKS cluster & deploys Curity Identity Server along with other components               "
     echo " --start                        starts up the environment                                                                        "
     echo " --stop                         shuts down the environment                                                                       "
     echo " --load-balancer-public-ip      prints the public IP address of the load balancer                                                "
-    echo " --delete                       deletes the eks k8s cluster & identity server deployment                                         "
+    echo " --delete                       deletes the EKS cluster & Identity Server deployment                                         "
 }
 
 
@@ -92,16 +92,18 @@ fill_templates() {
 
 determine_eks_cluster_creation_type() {
     echo -e "\n"
-    echo "Choose one of the following options to proceed further :         "
+    echo "Choose one of the following options to proceed further :           "
     echo "|-----------------------------------------------------------------|"
     echo "| [1]  EKSCTL     => EKS cluster deployment using eksctl          |"
     echo "| [2]  TERRAFORM  => EKS cluster deployment using terraform       |"
+    echo "| [3]  CANCEL                                                     |"
     echo "|-----------------------------------------------------------------|"
 
     read -rp "What type of deployment [1 or 2] ? : " choiceDeploy
     case "$choiceDeploy" in
       1 ) create_eks_cluster_using_eksctl  ;;
       2 ) create_eks_cluster_using_terraform ;;
+      3 ) exit 1 ;;
       * ) echo "Invalid choice"  
           exit 1 ;;
     esac  
@@ -111,6 +113,10 @@ determine_eks_cluster_creation_type() {
 
 
 create_eks_cluster_using_eksctl() {
+    if ! [ -x "$(command -v eksctl version)" ]; then
+      echo "** You need to have eksctl cli installed to use that option **"
+      determine_eks_cluster_creation_type
+    fi
     generate_self_signed_certificates
     envsubst < eksctl-config/cluster-cfg.yaml.template > eksctl-config/cluster-cfg.yaml
 
@@ -123,6 +129,10 @@ create_eks_cluster_using_eksctl() {
 
 
 create_eks_cluster_using_terraform() {
+    if ! [ -x "$(command -v terraform version)" ]; then
+      echo "** You need to have terraform installed to use that option **"
+      determine_eks_cluster_creation_type
+    fi
     generate_self_signed_certificates
     echo -e "Creating EKS cluster for deployment using terraform..."
     fill_templates
